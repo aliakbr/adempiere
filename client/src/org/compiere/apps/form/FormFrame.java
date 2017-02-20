@@ -228,6 +228,10 @@ public class FormFrame extends CFrame
 		AEnv.addMenuItem("Online", null, null, mHelp, this);
 		AEnv.addMenuItem("EMailSupport", null, null, mHelp, this);
 		AEnv.addMenuItem("About", null, null, mHelp, this);
+		
+		//		Basic Help
+		AEnv.addMenuItem("General Help", null, null, mHelp, null);
+		
 	}   //  createMenu
 
 	/**

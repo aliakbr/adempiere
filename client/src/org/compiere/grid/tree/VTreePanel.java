@@ -51,6 +51,7 @@ import javax.swing.JMenuItem;
 import javax.swing.JPopupMenu;
 import javax.swing.JScrollPane;
 import javax.swing.JSplitPane;
+import javax.swing.JTextPane;
 import javax.swing.JToolBar;
 import javax.swing.JTree;
 import javax.swing.KeyStroke;
@@ -59,6 +60,7 @@ import javax.swing.TransferHandler;
 import javax.swing.UIManager;
 import javax.swing.plaf.SplitPaneUI;
 import javax.swing.plaf.basic.BasicSplitPaneUI;
+import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.DefaultTreeSelectionModel;
 import javax.swing.tree.TreePath;
 
@@ -66,6 +68,7 @@ import org.adempiere.exceptions.DBException;
 import org.adempiere.plaf.AdempierePLAF;
 import org.adempiere.plaf.AdempiereTaskPaneUI;
 import org.compiere.apps.ADialog;
+import org.compiere.apps.helpTab.HelpPanel;
 import org.compiere.model.MTree;
 import org.compiere.model.MTreeNode;
 import org.compiere.swing.CButton;
@@ -544,7 +547,12 @@ public final class VTreePanel extends CPanel
 			}
 
 			//  search the nodes
-			while(!found && m_nodeEn != null && m_nodeEn.hasMoreElements())
+			
+			/* Pengubahan : Buat JFrame yang isinya hasil dari pencarian */
+			DefaultMutableTreeNode root1 = new DefaultMutableTreeNode("Search Result");
+			root1.setParent(null);
+			
+			while(m_nodeEn != null && m_nodeEn.hasMoreElements())
 			{
 				MTreeNode nd = (MTreeNode)m_nodeEn.nextElement();
 				//	compare in upper case
@@ -552,11 +560,18 @@ public final class VTreePanel extends CPanel
 				{
 					found = true;
 					TreePath treePath = new TreePath(nd.getPath());
-					tree.setSelectionPath(treePath);
-					tree.makeVisible(treePath);			//	expand it
-					tree.scrollPathToVisible(treePath);
+					root1.add(nd);
+					//tree.setSelectionPath(treePath);
+					//tree.makeVisible(treePath);			//	expand it
+					//tree.scrollPathToVisible(treePath);
 				}
 			}
+			JFrame jf = new JFrame ("Search Result");
+			JTree tree1 = new JTree(root1);
+			JScrollPane treeView = new JScrollPane(tree1);
+			jf.add(treeView);
+		    jf.setSize(500, 600);
+			jf.setVisible(true);
 			if (!found)
 				ADialog.beep();
 		}   //  treeSearch

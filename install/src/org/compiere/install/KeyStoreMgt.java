@@ -34,7 +34,7 @@ import org.compiere.Adempiere;
 import org.compiere.util.CLogMgt;
 import org.compiere.util.CLogger;
 
-import sun.security.tools.KeyTool;
+//import sun.security.tools.KeyTool;
 
 /**
  *	Class to manage SSL KeyStore
@@ -455,7 +455,7 @@ public class KeyStoreMgt
                 //vpj-cd add support java 6
                 try
                 {
-		KeyTool.main(args);
+		//KeyTool.main(args);
                 }
                 catch (Exception e)
                 {                     

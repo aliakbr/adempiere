@@ -101,7 +101,6 @@ public class AdempiereWebUI extends Window implements EventListener, IWebClient
     {
     	this.addEventListener(Events.ON_CLIENT_INFO, this);
     	this.setVisible(false);
-
     	userPreference = new UserPreference();
     }
 

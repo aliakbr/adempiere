@@ -22,7 +22,7 @@ import javax.swing.plaf.basic.BasicMenuUI;
 
 /**
  * 	Adempiere Menu UI.
- * 	The main menu.
+ * 	The main menu. daLJDKLad
  *	
  *  @author Jorg Janke
  *  @version $Id: AdempiereMenuUI.java,v 1.2 2006/07/30 00:52:24 jjanke Exp $

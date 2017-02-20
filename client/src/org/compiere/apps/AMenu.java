@@ -53,6 +53,7 @@ import javax.swing.event.ChangeListener;
 import org.adempiere.apps.graph.PAPanel;
 import org.adempiere.plaf.AdempierePLAF;
 import org.compiere.Adempiere;
+import org.compiere.apps.helpTab.HelpPanel;
 import org.compiere.apps.wf.WFActivity;
 import org.compiere.apps.wf.WFPanel;
 import org.compiere.grid.tree.VTreePanel;
@@ -207,6 +208,8 @@ public final class AMenu extends CFrame
 	private int 		m_tabActivities = 1;
 	/** Center Tabbed Pane index: Workflow		*/
 	private int 		m_tabWorkflow = 2;
+	/** Center Tabbed Pane index : General Help */
+	private int 		m_General_Help = 3;
 	
 	//	Links
 	private int			m_request_Menu_ID = 0;
@@ -282,6 +285,9 @@ public final class AMenu extends CFrame
 	private CPanel infoPanel = new CPanel();
 	private CButton bNotes = new CButton();
 	private CButton bRequests = new CButton();
+	
+	//Button for help Added
+	private CButton bHelp = new CButton();
 	private GridLayout infoLayout = new GridLayout();
 	private JProgressBar memoryBar = new JProgressBar();
 	//	Tabs
@@ -290,6 +296,9 @@ public final class AMenu extends CFrame
 	private WFActivity	wfActivity = null;
 	private WFPanel		wfPanel = null;
 	private WindowMenu m_WindowMenu;
+	
+	//Added
+	private HelpPanel helpPanel = new HelpPanel();
 
 	/**
 	 *	Static Init.
@@ -336,6 +345,14 @@ public final class AMenu extends CFrame
 		bRequests.addActionListener(this);
 		bRequests.setIcon(Env.getImageIcon("Request24.gif"));
 		bRequests.setMargin(new Insets(0, 0, 0, 0));
+		
+		//Added Button for Help
+		bHelp.setText("Help");
+		bHelp.setActionCommand("General_Help");
+		bHelp.addActionListener(this);
+		bHelp.setIcon(Env.getImageIcon2("Help16"));
+		bHelp.setMargin(new Insets(0, 0, 0, 0));
+		
 		//
 		southLayout.setHgap(0);
 		southLayout.setVgap(1);
@@ -353,7 +370,6 @@ public final class AMenu extends CFrame
 		mainPanel.add(southPanel, BorderLayout.SOUTH);
 		mainPanel.add(Box.createHorizontalStrut(3), BorderLayout.EAST);
 		mainPanel.add(Box.createHorizontalStrut(3), BorderLayout.WEST);
-
 		//	Tabs
 		centerPane.setFont(centerPane.getFont().deriveFont(centerPane.getFont().getSize2D()+1));
 		paPanel = PAPanel.get();
@@ -364,6 +380,7 @@ public final class AMenu extends CFrame
 			m_tabMenu++;
 			m_tabActivities++;
 			m_tabWorkflow++;
+			m_General_Help++;
 		}
 		treePanel.setBorder(BorderFactory.createEmptyBorder(2,3,2,3));
 		//centerPane.add(treePanel, Msg.getMsg(m_ctx, "Menu"));
@@ -373,14 +390,19 @@ public final class AMenu extends CFrame
 		//centerPane.add(new CScrollPane(wfPanel), Msg.getMsg (m_ctx, "WorkflowPanel"));
 		centerPane.addTab(Msg.getMsg (m_ctx, "WorkflowPanel"), Env.getImageIcon2("WorkFlow16"), new CScrollPane(wfPanel));
 		centerPane.addChangeListener (this);
-		//
+		
+		//Added
+		//centerPane.addTab(Msg.getMsg (m_ctx, "General Help"), Env.getImageIcon2("Help16"), helpPanel);
+		centerPane.addChangeListener (this);
 		southPanel.setLayout(southLayout);
 		southPanel.add(infoPanel, BorderLayout.NORTH);
 		southPanel.add(progressBar, BorderLayout.SOUTH);
 		//
 		infoPanel.add(bNotes, null);
 		infoPanel.add(bRequests, null);
+		infoPanel.add(bHelp,null);
 		infoPanel.add(memoryBar, null);
+		
 		//
 		int loc = Ini.getDividerLocation();
 		if (loc > 0)
@@ -473,7 +495,7 @@ public final class AMenu extends CFrame
 			AEnv.addMenuItem("InfoAsset", "Info", null, mView, this);	
 		}
 		
-		//      Tools
+		//Tools
 		JMenu mTools = AEnv.getMenu("Tools");
 		menuBar.add(mTools);
 		AEnv.addMenuItem("Calculator", null, null, mTools, this);
@@ -499,7 +521,7 @@ public final class AMenu extends CFrame
 		this.getRootPane().getActionMap().put("ShowAllWindow", action);
 		action.setDelegate(this);
 
-		//      Help
+		//Help
 		JMenu mHelp = AEnv.getMenu("Help");
 		menuBar.add(mHelp);
 		AEnv.addMenuItem("Online", null, null, mHelp, this);
@@ -608,8 +630,11 @@ public final class AMenu extends CFrame
 			gotoRequests();
 		else if (e.getActionCommand().equals("ShowAllWindow"))
 			m_WindowMenu.expose();
+		else if (e.getSource() == bHelp)
+			helpPanel.loadView();
 		else if (!AEnv.actionPerformed(e.getActionCommand(), m_WindowNo, this))
 			log.log(Level.SEVERE, "unknown action=" + e.getActionCommand());
+			
 		//updateInfo();
 	}	//	actionPerformed
 
@@ -623,7 +648,7 @@ public final class AMenu extends CFrame
 			+ "WHERE AD_Client_ID=? AND AD_User_ID IN (0,?)"
 			+ " AND Processed='N'";
 		int retValue = DB.getSQLValue(null, sql, Env.getAD_Client_ID(Env.getCtx()), m_AD_User_ID);
-		return retValue;
+		return retValue;	
 	}	//	getNotes
 
 	/**
@@ -754,6 +779,10 @@ public final class AMenu extends CFrame
 		if (centerPane.getSelectedIndex() == m_tabActivities)
 		{
 			wfActivity.loadActivities();
+		}
+		else if (centerPane.getSelectedIndex() == m_General_Help)
+		{
+			helpPanel.loadView();
 		}
 	}	//	stateChanged
 

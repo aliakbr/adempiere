@@ -34,6 +34,12 @@ import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JScrollPane;
 import javax.swing.JTextPane;
+import javax.swing.text.BadLocationException;
+import javax.swing.text.DefaultStyledDocument;
+import javax.swing.text.Style;
+import javax.swing.text.StyleConstants;
+import javax.swing.text.StyleContext;
+import javax.swing.text.StyledDocument;
 
 import org.adempiere.exceptions.AdempiereException;
 import org.adempiere.plaf.AdempierePLAF;
@@ -87,7 +93,7 @@ public class WFPanel extends CPanel
 		+","+DB.TO_STRING(MWorkflow.WORKFLOWTYPE_DocumentValue)
 		+")";
 
-
+	private String helpText = null;
 	/**
 	 * 	Create Workflow Panel.
 	 * 	FormPanel
@@ -102,6 +108,33 @@ public class WFPanel extends CPanel
 	 * 	@param menu menu
 	 */
 	public WFPanel (AMenu menu)
+	{
+		this(menu, WORKFLOW_WhereClause, -1);
+	}
+	
+	public WFPanel(String x)
+	{
+		this (null, WORKFLOW_WhereClause, -1);
+		helpText = x;
+		System.out.println(helpText);
+		//Editted, added text to show help
+		StyleContext context = new StyleContext();
+	    StyledDocument document = new DefaultStyledDocument(context);
+
+	    Style style = context.getStyle(StyleContext.DEFAULT_STYLE);
+	    StyleConstants.setAlignment(style, StyleConstants.ALIGN_LEFT);
+	    StyleConstants.setFontSize(style, 14);
+	    StyleConstants.setSpaceAbove(style, 4);
+	    StyleConstants.setSpaceBelow(style, 4);
+	    try {
+	        document.insertString(document.getLength(), helpText, style);
+	      } catch (BadLocationException badLocationException) {
+	        System.err.println("Oops");
+	      }
+	    infoTextPane = new JTextPane(document);
+	}
+	
+	public WFPanel (AMenu menu, String x)
 	{
 		this(menu, WORKFLOW_WhereClause, -1);
 	}
@@ -152,6 +185,11 @@ public class WFPanel extends CPanel
 	/**	Logger			*/
 	private static CLogger	log = CLogger.getCLogger(WFPanel.class);
 	
+	//Added
+	private StyleContext context = new StyleContext();
+    private StyledDocument document = new DefaultStyledDocument(context);
+	private Style style = context.getStyle(StyleContext.DEFAULT_STYLE);
+	
 	//	UI
 	private BorderLayout mainLayout = new BorderLayout();
 	private CPanel southPanel = new CPanel();
@@ -194,7 +232,8 @@ public class WFPanel extends CPanel
 		//	Info
 		infoScrollPane.getViewport().add(infoTextPane, null);
 		infoScrollPane.setPreferredSize(new Dimension(200, 140));
-		infoTextPane.setBackground(AdempierePLAF.getFieldBackground_Inactive());
+		
+		//infoTextPane.setBackground(AdempierePLAF.getFieldBackground_Inactive());
 		infoTextPane.setEditable(false);
 		infoTextPane.setRequestFocusEnabled(false);
 		infoTextPane.setContentType("text/html");
@@ -312,6 +351,7 @@ public class WFPanel extends CPanel
 	 */
 	public void load (int AD_Workflow_ID, boolean readWrite)
 	{
+		System.out.print("out xxx");
 		log.fine("RW=" + readWrite + " - AD_Workflow_ID=" + AD_Workflow_ID);
 		if (AD_Workflow_ID == 0)
 			return;
@@ -530,7 +570,8 @@ public class WFPanel extends CPanel
 	{
 		org.compiere.Adempiere.startupEnvironment(true);
 		JFrame jf = new JFrame ("WF");
-		WFPanel pp = new WFPanel(null);
+		System.out.println("out");
+		WFPanel pp = new WFPanel(null, null);
 		pp.load(101, true);
 		jf.getContentPane().add (pp);
 		jf.pack();

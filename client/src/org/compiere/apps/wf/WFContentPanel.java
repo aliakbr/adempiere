@@ -77,6 +77,7 @@ public class WFContentPanel extends CPanel
 		m_NewMenuNode.addActionListener(this);
 	}	//	WFContentPanel
 	
+
 	private WFPanel 	m_parent = null;
 	/**	Logger			*/
 	private static CLogger	log = CLogger.getCLogger(WFContentPanel.class);
